@@ -128,3 +128,20 @@ if __name__ == '__main__':
     input = torch.ones(B, in_channels, size, size).cuda()
     output = conv(input)
     print(input.shape, output.shape)
+
+    # flops, params
+    from thop import profile
+    from thop import clever_format
+    
+    class Conv2d(nn.Module):
+        def __init__(self):
+            super(Conv2d, self).__init__()
+            self.conv = nn.Conv2d(in_channels, out_channels, kernel_size=3)
+        def forward(self, input):
+            return self.conv(input)
+    conv2 = Conv2d().cuda()
+    conv2.train()
+    macs2, params2 = profile(conv2, inputs=(input, ))
+    macs, params = profile(conv, inputs=(input, ))
+    print(macs2, params2)
+    print(macs, params)
