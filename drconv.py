@@ -110,8 +110,7 @@ class DRConv2d(nn.Module):
         self.asign_index = asign_index.apply
 
     def forward(self, input):
-        kernel = self.conv_kernel(input)
-        kernel = kernel.view(kernel.size(0), -1, kernel.size(2), kernel.size(3)) # B x (r*in*out) x W X H
+        kernel = self.conv_kernel(input) # B x (r*in*out) x W X H
         output = self.corr(input, kernel, **self.kwargs) # B x (r*out) x W x H
         output = output.view(output.size(0), self.region_num, -1, output.size(2), output.size(3)) # B x r x out x W x H
         guide_feature = self.conv_guide(input)
